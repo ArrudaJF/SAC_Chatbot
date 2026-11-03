@@ -3,6 +3,7 @@ from openai.types.chat import ChatCompletionMessageParam
 import json
 import os
 import auxiliares as aux
+from pypdf import PdfReader
 
 from dotenv import load_dotenv
 
@@ -27,6 +28,13 @@ with open('tools.json', 'r') as f:
 
 with open('system_file.txt', 'r') as f:
     system_file = f.read()
+
+# creating a pdf reader object
+reader = PdfReader('./data/políticas_da_loja.pdf')
+
+for page in reader.pages[1:]:
+    system_file += page.extract_text() + '\n'
+
 
 messages = [
     {"role": "system", "content": f'{system_file}'}
