@@ -25,8 +25,11 @@ funcoes_disponiveis = {
 with open('tools.json', 'r') as f:
     tools = json.load(f)
 
+with open('system_file.txt', 'r') as f:
+    system_file = f.read()
+
 messages = [
-    {"role": "system", "content": "Você é um assistente da loja de música 'Empório da música'. Sempre que precisar consulte nossa base de dados através de Tools e Function Calling disponíveis. SEMPRE que o cliente quiser saber sobre um pedido feito, GARANTA que o cliente só possa consultar pedidos referentes a ele."}
+    {"role": "system", "content": f'{system_file}'}
 ]
 
 print("=== Sistema com Function Calling Iniciado ===")
@@ -53,7 +56,7 @@ while True:
     response_message = response.choices[0].message
     
     # Verifica se o modelo decidiu chamar alguma função
-    if response_message.tool_calls:
+    while(response_message.tool_calls):
         # Adiciona a intenção do modelo ao histórico
         messages.append(response_message) # type: ignore
         
@@ -81,13 +84,9 @@ while True:
             model=model_name, 
             messages=messages # type: ignore
         )
+        response_message = second_response.choices[0].message
         
-        bot_reply = second_response.choices[0].message.content
-        print(f"Agente: {bot_reply}\n")
-        messages.append({"role": "assistant", "content": bot_reply}) # type: ignore
-        
-    else:
-        # O modelo respondeu diretamente, sem usar ferramentas
-        bot_reply = response_message.content
-        print(f"Agente: {bot_reply}\n")
-        messages.append({"role": "assistant", "content": bot_reply}) # type: ignore
+    # O modelo respondeu diretamente, sem usar ferramentas
+    bot_reply = response_message.content
+    print(f"Agente: {bot_reply}\n")
+    messages.append({"role": "assistant", "content": bot_reply}) # type: ignore
