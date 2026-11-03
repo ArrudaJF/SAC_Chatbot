@@ -25,15 +25,19 @@ funcoes_disponiveis = {
 with open('tools.json', 'r') as f:
     tools = json.load(f)
 
+with open('system_file.txt', 'r') as f:
+    system_file = f.read()
+
+
 messages = [
-    {"role": "system", "content": "Você é um assistente da loja de música 'Empório da música'. Sempre que precisar consulte nossa base de dados através de Tools e Function Calling disponíveis. SEMPRE que o cliente quiser saber sobre um pedido feito, GARANTA que o cliente só possa consultar pedidos referentes a ele."}
+    {"role": "system", "content": system_file}
 ]
 
 print("=== Sistema com Function Calling Iniciado ===")
 print("Tente perguntar: 'Onde está meu pedido 123?'\n")
 
-model_name = "nvidia/nemotron-3-ultra-550b-a55b:free"
-# "meta-llama/llama-3.1-8b-instruct"
+model_name = "meta-llama/llama-3.1-8b-instruct"
+# "nvidia/nemotron-3-ultra-550b-a55b:free" "meta-llama/llama-3.1-8b-instruct"
 
 while True:
     user_input = input("Cliente: ")
@@ -53,13 +57,13 @@ while True:
     response_message = response.choices[0].message
     
     # Verifica se o modelo decidiu chamar alguma função
-    if response_message.tool_calls:
+    while(response_message.tool_calls):
         # Adiciona a intenção do modelo ao histórico
         messages.append(response_message) # type: ignore
         
         for tool_call in response_message.tool_calls:
             nome_funcao = tool_call.function.name # type: ignore
-            # Converte os argumentos extraídos pelo modelo (JSON string) para um dicionário Python
+
             argumentos = json.loads(tool_call.function.arguments) # type: ignore
             
             print(f"[Sistema executando função local: {nome_funcao}({argumentos})]...")
@@ -79,15 +83,13 @@ while True:
         # Passo 3: Pede ao modelo para gerar a resposta final em linguagem natural
         second_response = client.chat.completions.create(
             model=model_name, 
-            messages=messages # type: ignore
+            messages=messages, # type: ignore
+            tools=tools,
+            tool_choice="auto" # Deixa o modelo decidir se precisa chamar a função
         )
+        response_message = second_response.choices[0].message
         
-        bot_reply = second_response.choices[0].message.content
-        print(f"Agente: {bot_reply}\n")
-        messages.append({"role": "assistant", "content": bot_reply}) # type: ignore
-        
-    else:
-        # O modelo respondeu diretamente, sem usar ferramentas
-        bot_reply = response_message.content
-        print(f"Agente: {bot_reply}\n")
-        messages.append({"role": "assistant", "content": bot_reply}) # type: ignore
+    # O modelo respondeu diretamente, sem usar ferramentas
+    bot_reply = response_message.content
+    print(f"Agente: {bot_reply}\n")
+    messages.append({"role": "assistant", "content": bot_reply}) # type: ignore
