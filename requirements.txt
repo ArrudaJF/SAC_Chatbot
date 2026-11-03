@@ -1,0 +1,12 @@
+requests==2.18.4;
+google-auth==1.1.0;
+transformers==5.22.1;
+numpy==2.5.4;
+openai==3.42.0;
+pandas==3.1.0;
+torch==2.15.0;
+torchaudio==2.11.1;
+torchvision==0.29.2;
+haystack-ai==3.4.1;
+huggingface-api-haystack==3.1.0;
+python-dotenv==1.2.4;

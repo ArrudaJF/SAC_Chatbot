@@ -1,0 +1,71 @@
+[
+    {
+        "type": "function",
+        "function": {
+            "name": "consultar_politica",
+            "description": "Consulta o arquivo de política da loja que contém informações sobre o funcionamento da loja, como horário, devoluções, frete, SAC, garantia ou privacidade.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "numero_pedido": {
+                        "type": "int",
+                        "description": "O número de identificação do pedido (ex: 123, 456)."
+                    }
+                },
+                "required": ["numero_pedido"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "consultar_pedidos",
+            "description": "Consulta o status de entrega e pagamento de um pedido do cliente.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "numero_pedido": {
+                        "type": "int",
+                        "description": "O número de identificação do pedido (ex: 123, 456)."
+                    }
+                },
+                "required": ["numero_pedido"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "consultar_produtos",
+            "description": "Consulta os produtos disponíveis na loja, têm descrições, preços e outras informações."
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "consultar_categorias",
+            "description": "Relaciona as categorias de produtos com os IDs encontrados na função consultar_produtos."
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "consultar_clientes",
+            "description": "Consulta informações dos clientes, como seu ID, nome, e-mail, número do celular e cidade natal."
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "consultar_itens",
+            "description": "Consulta os IDs dos pedidos, quantidades e IDs de produtos."
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "consultar_promocoes",
+            "description": "Consulta as promoções disponíveis na loja."
+        }
+    }
+]
