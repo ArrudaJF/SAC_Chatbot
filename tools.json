@@ -3,16 +3,16 @@
         "type": "function",
         "function": {
             "name": "consultar_politica",
-            "description": "Consulta o arquivo de política da loja que contém informações sobre o funcionamento da loja, como horário, devoluções, frete, SAC, garantia ou privacidade.",
+            "description": "Consulta o arquivo de política da loja.",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "numero_pedido": {
-                        "type": "int",
-                        "description": "O número de identificação do pedido (ex: 123, 456)."
+                    "num_paginas": {
+                        "type": "List[int]",
+                        "description": "UMA lista de inteiros das páginas a serem consultadas."
                     }
                 },
-                "required": ["numero_pedido"]
+                "required": ["num_paginas"]
             }
         }
     },

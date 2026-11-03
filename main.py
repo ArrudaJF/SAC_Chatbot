@@ -3,7 +3,6 @@ from openai.types.chat import ChatCompletionMessageParam
 import json
 import os
 import auxiliares as aux
-from pypdf import PdfReader
 
 from dotenv import load_dotenv
 
@@ -29,22 +28,16 @@ with open('tools.json', 'r') as f:
 with open('system_file.txt', 'r') as f:
     system_file = f.read()
 
-# creating a pdf reader object
-reader = PdfReader('./data/políticas_da_loja.pdf')
-
-for page in reader.pages[1:]:
-    system_file += page.extract_text() + '\n'
-
 
 messages = [
-    {"role": "system", "content": f'{system_file}'}
+    {"role": "system", "content": system_file}
 ]
 
 print("=== Sistema com Function Calling Iniciado ===")
 print("Tente perguntar: 'Onde está meu pedido 123?'\n")
 
-model_name = "nvidia/nemotron-3-ultra-550b-a55b:free"
-# "meta-llama/llama-3.1-8b-instruct"
+model_name = "meta-llama/llama-3.1-8b-instruct"
+# "nvidia/nemotron-3-ultra-550b-a55b:free" "meta-llama/llama-3.1-8b-instruct"
 
 while True:
     user_input = input("Cliente: ")
@@ -70,7 +63,7 @@ while True:
         
         for tool_call in response_message.tool_calls:
             nome_funcao = tool_call.function.name # type: ignore
-            # Converte os argumentos extraídos pelo modelo (JSON string) para um dicionário Python
+
             argumentos = json.loads(tool_call.function.arguments) # type: ignore
             
             print(f"[Sistema executando função local: {nome_funcao}({argumentos})]...")
@@ -90,7 +83,9 @@ while True:
         # Passo 3: Pede ao modelo para gerar a resposta final em linguagem natural
         second_response = client.chat.completions.create(
             model=model_name, 
-            messages=messages # type: ignore
+            messages=messages, # type: ignore
+            tools=tools,
+            tool_choice="auto" # Deixa o modelo decidir se precisa chamar a função
         )
         response_message = second_response.choices[0].message
         
