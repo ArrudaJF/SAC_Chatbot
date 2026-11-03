@@ -3,6 +3,19 @@ Uma LLM de atendimento ao cliente de uma loja fictícia 'Empório da Música'
 
 # Execução do código:
 Certifique-se de ter o Python instalado na sua máquina (versão 3.8 ou superior). 
+
+Crie um Virtual Environment com:
+
+```bash
+py -m venv .venv
+```
+
+Ative o venv:
+
+```bash
+./.venv/Scripts/activate
+```
+
 Você precisará instalar as bibliotecas do arquivo requirements.txt:
 
 ```bash
