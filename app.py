@@ -49,7 +49,7 @@ if prompt := st.chat_input("Como posso ajudar?"):
     # CORREÇÃO 2: Passa a lista completa de dicionários em vez de filtrar chaves importantes
     response = client.chat.completions.create(
         model=st.session_state["openai_model"],
-        messages=st.session_state.messages,
+        messages=st.session_state.messages, # type: ignore
         tools=tools,
         tool_choice="auto"
     ) 
@@ -63,8 +63,8 @@ if prompt := st.chat_input("Como posso ajudar?"):
         st.session_state.messages.append(response_message.model_dump(exclude_none=True))
         
         for tool_call in response_message.tool_calls:
-            nome_funcao = tool_call.function.name
-            argumentos = json.loads(tool_call.function.arguments) 
+            nome_funcao = tool_call.function.name # type: ignore
+            argumentos = json.loads(tool_call.function.arguments)  # type: ignore
             
             print(f"[Sistema executando função local: {nome_funcao}({argumentos})]...")
             
@@ -83,7 +83,7 @@ if prompt := st.chat_input("Como posso ajudar?"):
         # Pede ao modelo para processar os dados recebidos e gerar texto (ou chamar mais ferramentas)
         second_response = client.chat.completions.create(
             model=st.session_state["openai_model"], 
-            messages=st.session_state.messages, 
+            messages=st.session_state.messages,  # type: ignore
             tools=tools,
             tool_choice="auto"
         )
@@ -96,4 +96,4 @@ if prompt := st.chat_input("Como posso ajudar?"):
         st.markdown(bot_reply)
 
     # CORREÇÃO 3: Salva o texto da resposta (`bot_reply`) no histórico, não o retorno do `st.write`
-    st.session_state.messages.append({"role": "assistant", "content": bot_reply})
+    st.session_state.messages.append({"role": "assistant", "content": bot_reply}) # type: ignore
